@@ -10,9 +10,9 @@ public class Runner {
 
     public static void main(String[] args) {
         try {
-            kr1();
-
-            kr3();
+            //kr1();
+            kr2();
+            //kr3();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -82,13 +82,58 @@ public class Runner {
         return array;
     }
 
-
+    /*Задание. Компрессия текста.
+    Реализовать возможность компрессии и декомпрессии текста в файле.
+    Под компрессией понимать замену более четырех одинаковых подряд идущих символов на комбинацию символов: #количествоПовторенийСимвола#символ
+    Например: кооооооордината -> к#7#ордината
+    Под декомпрессией понимать замену комбинации символов на последовательность этих символов.
+    Во входном файле input.txt находится текст.
+    Исходный файл может быть пустым.
+    В файле может быть несколько строк.
+    !!!Регистр имеет значение.
+    В выходной файл output1.txt вывести полученный текст после компрессии.
+    В выходной файл output2.txt вывести полученный файл после декомпрессии.*/
     private static void kr2() {
-
+        String pathInput = "input2.txt";
+        String pathOutput = "outputKR2.txt";
+        List<String> listOfStrings = readListOfStrings(pathInput);
+        Iterator<String> iterator = listOfStrings.iterator();
+        List<String> listWithCompressedLines = new ArrayList<>();
+        while (iterator.hasNext()) {
+            String s = iterator.next();
+            int iterationsCount = 0;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < s.length() - 2; i++) {
+                char a = s.charAt(i);
+                int firstIndex = i;
+                int count = 0;
+                if (s.charAt(i + 1) == a) {
+                    count++;
+                    System.out.print(a + " ");
+                    while (s.charAt(++i) == a && i <= s.length()) {
+                        count++;
+                    }
+                }
+                if (count > 3) {
+                    iterationsCount++;
+                    sb.append(s.substring(0, firstIndex));
+                    sb.append(a);
+                    sb.append("#");
+                    sb.append(count);
+                    sb.append("#");
+                    sb.append(s.substring(firstIndex + count, s.length()));
+                    s = sb.toString();
+                    iterationsCount += (3 + (String.valueOf(count).length()));
+                    i = iterationsCount - 2;
+                }
+            }
+            listWithCompressedLines.add(s);
+        }
+        writeToFile(pathOutput, listWithCompressedLines.iterator());
     }
 
     private static void kr3() {
-        String pathInput = "input2.txt";
+        String pathInput = "input3.txt";
         String pathOutput1 = "output1.txt";
         String pathOutput2 = "output2.txt";
         String pathOutput3 = "output3.txt";
