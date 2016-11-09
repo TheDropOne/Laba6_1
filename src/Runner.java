@@ -7,26 +7,12 @@ import java.util.regex.Pattern;
  * Created by Semen on 08-Nov-16.
  */
 public class Runner {
-    /*Задание. Разработать консольное приложение, выполняющее следующие действия:
 
-    1. На вход поступает текстовый файл input.in.
-    2. На 4 балла. Отсортировать строки текста по возрастанию количества символов в строке.
-        Результат записать в выходной файл output1.out.
-    3. На 5 баллов (задание 2 + задание 3). Отсортировать символы в каждой строке текста по
-        возрастанию кодов символов. Результат записать в выходной файл output2.out.
-    4. На 6-7 баллов (задание 2 + задание 3 + задание 4). Отсортировать слова в каждой строке
-        файла по алфавиту. Регистр не имеет значения. Разделители: пробел, точка, запятая, точка
-        с запятой. Результат записать в выходной файл output3.out.
-
-    Дополнительные баллы (за каждый пункт 1 балл):
-
-        1. Использовать коллекцию.
-        2. Использовать итератор.
-        3. Реализовать компараторы для сортировки.
-    */
     public static void main(String[] args) {
         try {
             kr1();
+
+            kr3();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,18 +88,59 @@ public class Runner {
     }
 
     private static void kr3() {
-        String pathInput = "input.in";
-        String pathOutput1 = "output1.out";
+        String pathInput = "input2.txt";
+        String pathOutput1 = "output1.txt";
+        String pathOutput2 = "output2.txt";
+        String pathOutput3 = "output3.txt";
 
 
         List<String> listOfStrings = readListOfStrings(pathInput);
         // task 1. 4 points
-        Set<String> setOfStrings = new TreeSet<>();
-        setOfStrings = (Set<String>) listOfStrings;
-        for (String setOfString : setOfStrings) {
-            System.out.println(setOfString);
+        Collections.sort(listOfStrings);
+        writeToFile(pathOutput1, listOfStrings.iterator());
+        //Task 2.
+        List<String> listWithSortedStrings = new ArrayList<>();
+        for (String s : listOfStrings) {
+            List<Character> characterList = new ArrayList<>();
+            for (int i = 0; i < s.length(); i++) {
+                characterList.add(s.charAt(i));
+            }
+            Collections.sort(characterList);
+            StringBuilder sb = new StringBuilder();
+            for (char a : characterList) {
+                sb.append(a);
+            }
+            listWithSortedStrings.add(sb.toString());
         }
-        writeToFile(pathOutput1,setOfStrings.iterator());
+        writeToFile(pathOutput2, listWithSortedStrings.iterator());
+
+        // task 3. 10 points
+        Comparator<String> comparator = (o1, o2) -> {
+            if (o1.length() < o2.length()) return -1;
+            if (o1.length() > o2.length()) return 1;
+            o1 = o1.toLowerCase();
+            o2 = o2.toLowerCase();
+            return o1.compareTo(o2);
+        };
+        List<String> arrayList = new ArrayList<>();
+        Pattern pattern = Pattern.compile("[^\\.,\\s;]+");
+        Matcher matcher;
+        Iterator<String> listIterator = listOfStrings.iterator();
+        while (listIterator.hasNext()) {
+            matcher = pattern.matcher(listIterator.next());
+            List<String> tempList = new ArrayList<>();
+            while (matcher.find()) {
+                tempList.add(matcher.group());
+            }
+            Collections.sort(tempList, comparator);
+            StringBuilder sb = new StringBuilder();
+            for (String s : tempList) {
+                sb.append(s);
+                sb.append(" ");
+            }
+            arrayList.add(sb.toString());
+        }
+        writeToFile(pathOutput3, arrayList.iterator());
     }
 
     private static void writeToFile(String filename, Iterator<?> iterator) {
@@ -122,6 +149,7 @@ public class Runner {
             fw = new FileWriter(new File(filename));
             while (iterator.hasNext()) {
                 fw.write((String) iterator.next());
+                fw.write(System.lineSeparator());
             }
         } catch (IOException e) {
             e.printStackTrace();
