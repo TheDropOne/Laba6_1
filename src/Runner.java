@@ -18,7 +18,6 @@ public class Runner {
         }
     }
 
-
     private static void kr1() throws Exception {
         Pattern pattern = Pattern.compile("[^\\.,\\s;]{2,}");
         String path = "input.txt";
