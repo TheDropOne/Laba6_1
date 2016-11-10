@@ -32,6 +32,7 @@ public class Runner {
             String word;
             while (matcher.find()) {
                 word = matcher.group();
+                word = word.toLowerCase();
                 boolean isExist = false;
                 for (String s : wordCombinations(word)) {
                     if (wordsMap.containsKey(s)) {
